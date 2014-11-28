@@ -41,7 +41,7 @@ def check_nest_description(params):
 active_check_info['nest'] = {
     "command_line"        : '$USER1$/check_nest $ARG1$',
     "argument_function"   : check_nest_arguments,
-    "service_description" : check_nest_description ,
+    "service_description" : check_nest_description,
     "has_perfdata"        : True,
 }
 

@@ -22,33 +22,32 @@ group = "activechecks"
 register_rule(group,
     "active_checks:nest",
     Dictionary(
-        title = _("Check Nest services"),
+        title = _("Check Nesty services"),
         help = _("Checks Nest (http://www.nest.com) services based on registered Client and API calls"),
         elements = [
             ( "access_token_url",
               TextAscii(
-                  title = _("Access Token URL"),
-                  help = _("URL from your Nest client application where the PIN+secret "
+                    title = _("Access Token URL"),
+                    allow_empty = False,
+                    help = _("URL from your Nest client application where the PIN+secret "
                              "is sent to get an access token"),
-                  allow_empty = False,
-               )
+              )
             ),
             ( "client_secret",
               TextAscii(
-                  title = _("Client Secret"),
-                  help = _("Private value from client application"),
-                  allow_empty = False,
-               )
+                    title = _("Client Secret"),
+                    allow_empty = False,
+                    help = _("Private value from client application"),
+              )
             ),
             ( "pin_code",
               TextAscii(
-                  title = _("PIN Code"),
-                  help = _("Value returned from authenticating your personal Nest "
+                    title = _("PIN Code"),
+                    allow_empty = False,
+                    help = _("Value returned from authenticating your personal Nest "
                              "account via the Client Authorization URL"),
-                  allow_empty = False,
-               )
-            ),
-        ],
-        required_keys = [ "access_token_url", "client_secret", "pin_code" ],
+              )
+            )
+        ]
     ),
     match = 'all')
