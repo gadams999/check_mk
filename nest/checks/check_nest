@@ -18,31 +18,28 @@
 # Boston, MA 02110-1301 USA.
 
 def check_nest_arguments(params):
-    settings = params[0]
+    access_token_url, client_secret, pin_code, settings = params
 
-    if "access_token_url" in settings:
-        args = " -a %s" % settings["access_token_url"]
+    args = " -a %s" % quote_shell_string(access_token_url)
 
-    if "client_secret" in settings:
-        args += " -c %s" % settings["client_secret"]
+    args += " -c %s" % quote_shell_string(client_secret)
 
-    if "pin_code" in settings:
-        args += " -p %s" % settings["pin_code"]
+    args += " -p %s" % quote_shell_string(pin_code)
+
+
+    if "description" in settings:
+        args = " -d %s" % quote_shell_string(settings["description"])
 
     return args
 
 def check_nest_description(params):
-    settings = params[0]
-
     description = "Nest Thermostat"
 
     return description
 
 active_check_info['nest'] = {
-    "command_line"        : '$USER1$/check_nest $ARG1$',
+    "command_line"        : '$USER2$/check_nest $ARG1$',
     "argument_function"   : check_nest_arguments,
     "service_description" : check_nest_description,
-    "has_perfdata"        : True,
+    "has_perfdata"        : False,
 }
-
-
