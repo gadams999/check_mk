@@ -17,27 +17,11 @@
 # to the Free Software Foundation, Inc., 51 Franklin St,  Fifth Floor,
 # Boston, MA 02110-1301 USA.
 
-def check_nest_arguments(params):
-    access_token_url, client_id, client_secret, pin_code, settings = params
+def agent_nest_arguments(params, hostname, ipaddress):
+    args = ''
 
-    args = " -a %s" % quote_shell_string(access_token_url)
-    args += " -i %s" % quote_shell_string(client_id)
-    args += " -s %s" % quote_shell_string(client_secret)
-    args += " -p %s" % quote_shell_string(pin_code)
-
-    if "description" in settings:
-        args = " -d %s" % quote_shell_string(settings["description"])
+    args += quote_shell_string(params[0])
 
     return args
 
-def check_nest_description(params):
-    description = "Nest Thermostat"
-
-    return description
-
-active_check_info['nest'] = {
-    "command_line"        : '$USER2$/check_nest $ARG1$',
-    "argument_function"   : check_nest_arguments,
-    "service_description" : check_nest_description,
-    "has_perfdata"        : False,
-}
+special_agent_info['nest'] = agent_nest_arguments

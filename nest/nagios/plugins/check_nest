@@ -1,7 +1,46 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-import os, sys
+import os, sys, optparse, requests
 
-print "OK - harness"
+parser = optparse.OptionParser()
+parser.add_option('-a', '--access_token_url', dest='token_url', \
+    action='store', type='string')
+parser.add_option('-i', '--client_id', dest='client_id', \
+    action='store', type='string')
+parser.add_option('-s', '--client_secret', dest='secret', \
+    action='store', type='string')
+parser.add_option('-p', '--pin_code', dest='pin_code', \
+    action='store', type='string')
+parser.add_option('-d', '--description', dest='description', \
+    action='store', type='string')
+
+(opts, args) = parser.parse_args()
+optdict = vars(opts)
+# Make sure all mandatory options provided
+
+mandatories = ['token_url', 'client_id', 'secret', 'pin_code']
+for m in mandatories:
+    if not opts.__dict__[m]:
+        print "mandatory option is missing\n"
+        parser.print_help()
+        sys.exit(-1)
+
+token_url = optdict['token_url']
+client_id = optdict['client_id']
+secret = optdict['secret']
+pin_code = optdict['pin_code']
+
+payload = {'client_id': client_id, 'code': pin_code, \
+           'client_secret': secret, 'grant_type': 'authorization_code'}
+
+response = requests.post(token_url, params=payload)
+print (response.url)
+
+print response.json()
+
+
+print "\nOK - %s, %s, %s, %s" % (optdict['token_url'], optdict['client_id'], \
+    optdict['secret'], optdict['pin_code'])
+
 sys.exit(0)

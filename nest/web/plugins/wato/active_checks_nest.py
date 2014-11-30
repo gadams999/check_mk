@@ -9,17 +9,22 @@ register_rule(group,
                       TextAscii(
                           title = _("Access Token URL"),
                           allow_empty = False,
-                          help = _("access token"),
+                          help = _("Access Token URL from Nest Developer page"),
                           ),
                       TextAscii(
-                          title = _("Secret"),
+                          title = _("Client ID"),
                           allow_empty = False,
-                          help = _("Secret"),
+                          help = _("Client ID from Nest Developer client page"),
                           ),
                       TextAscii(
-                          title = _("PIN"),
+                          title = _("Client Secret"),
                           allow_empty = False,
-                          help = _("OIN"),
+                          help = _("Client Secret from Nest Developer client page"),
+                          ),
+                      TextAscii(
+                          title = _("PIN Code"),
+                          allow_empty = False,
+                          help = _("PIN Authorization code for authorized Nest account"),
                           ),
                       Dictionary(
                           title = _("Optional arguments"),

@@ -1,0 +1,26 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+import sys, requests
+
+
+if len(sys.argv) < 2:
+    sys.exit('Usage: %s access_token' % sys.argv[0])
+
+
+payload = {'auth': str(sys.argv[1])}
+
+r = requests.get("https://developer-api.nest.com/", params=payload)
+
+print r.url
+print r.text
+print "Response: " + str(r.status_code)
+print "<<<check_mk>>>"
+print "Version: 1.0"
+print "AgentOs: Nest RESTful API"
+
+token = str(sys.argv[1])
+
+print "<<<nest>>>"
+print "Upstairs  " + token
+
