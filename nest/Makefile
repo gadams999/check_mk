@@ -13,8 +13,8 @@ all:
 	sudo cp -p share/check_mk/agents/special/agent_nest /omd/sites/${SITE}/local/share/check_mk/agents/special/agent_nest
 	sudo chown dev.dev /omd/sites/${SITE}/local/share/check_mk/agents/special/agent_nest
 
-	sudo cp -p share/check_mk/checks/agent_nest /omd/sites/${SITE}/local/share/check_mk/checks/agent_nest
-	sudo chown dev.dev /omd/sites/${SITE}/local/share/check_mk/checks/nest
+	sudo cp -p share/check_mk/checks/* /omd/sites/${SITE}/local/share/check_mk/checks/
+	sudo chown dev.dev /omd/sites/${SITE}/local/share/check_mk/checks/*
 #	sudo cp -p nagios/plugins/check_nest /omd/sites/${SITE}/local/lib/nagios/plugins/check_nest
 #	sudo chown dev.dev /omd/sites/${SITE}/local/lib/nagios/plugins/check_nest
 

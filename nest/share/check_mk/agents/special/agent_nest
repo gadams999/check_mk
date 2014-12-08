@@ -7,20 +7,36 @@ import sys, requests
 if len(sys.argv) < 2:
     sys.exit('Usage: %s access_token' % sys.argv[0])
 
+token = str(sys.argv[1])
+payload = {'auth': token}
 
-payload = {'auth': str(sys.argv[1])}
+#r = requests.get("https://developer-api.nest.com/", params=payload)
+#print r.url
+#print r.text
+#print "Response: " + str(r.status_code)
 
-r = requests.get("https://developer-api.nest.com/", params=payload)
 
-print r.url
-print r.text
-print "Response: " + str(r.status_code)
 print "<<<check_mk>>>"
-print "Version: 1.0"
+print "Version: 1.1"
 print "AgentOs: Nest RESTful API"
 
-token = str(sys.argv[1])
-
 print "<<<nest>>>"
-print "Upstairs  " + token
-
+print "line1 foobarchu"
+print "<<<nest_thermostat>>>"
+print "[Upstairs_(Hallway)]"
+print "unique_id tICJpgbaGMAZzaMaCTVoyMnts0rWpQV9"
+print "software_version 4.1"
+print "is_online true"
+print "[Living_Room]"
+print "unique_id tICJpgbaGMB5mIN4hKuqVMnts0rWpQV9"
+print "software_version 4.1"
+print "is_online true"
+print "<<<nest_temp>>>"
+print "[Upstairs_(Hallway)]"
+print "temperature_scale F"
+print "ambient_temperature_f 72"
+print "ambient_temperature_c 21.5"
+print "[Living_Room]"
+print "temperature_scale F"
+print "ambient_temperature_f 72"
+print "ambient_temperature_c 21.5"

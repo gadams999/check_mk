@@ -1,0 +1,70 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+#
+# (c) 2014 Adams Technology Consulting
+#          Gavin Adams <me@gavinadams.org>
+#
+
+# This is free software;  you can redistribute it and/or modify it
+# under the  terms of the  GNU General Public License  as published by
+# the Free Software Foundation in version 2.  This file is distributed
+# in the hope that it will be useful, but WITHOUT ANY WARRANTY;  with-
+# out even the implied warranty of  MERCHANTABILITY  or  FITNESS FOR A
+# PARTICULAR PURPOSE. See the  GNU General Public License for more de-
+# ails.  You should have  received  a copy of the  GNU  General Public
+# License along with GNU Make; see the file  COPYING.  If  not,  write
+# to the Free Software Foundation, Inc., 51 Franklin St,  Fifth Floor,
+# Boston, MA 02110-1301 USA.
+
+# Pulls values from the <<<nest_thermostat>>> section of the special agent
+# "agent_nest" in the same checks directory
+
+# Creates temperature checks for all reported thermostats
+
+def nest_temp_parse(info):
+    thermostats = {}
+    for line in info:
+        if line[0].startswith('['):
+            name = line[0][1:-1]
+            thermostat = {}
+            thermostats[name] = thermostat
+        else:
+            key, value = line
+            if key == "is_online":
+                value = value.lower() == "true"
+            elif key in ["temperature", ]:
+                value = float(value)
+            elif key in ["humidity", ]:
+                value = int(value)
+            thermostat[key] = value
+    return thermostats
+
+def inventory_nest_temp(info):
+    print info
+    thermostats = nest_temp_parse(info)
+    return [ (name, {}) for name in thermostats ]
+
+def check_nest_temp(item, params, info):
+    thermostats = nest_thermostat_parse(info)
+    if item not in thermostats:
+        return 3, "Thermostat does not exist"
+    thermostat = thermostats[item]
+    
+    infotext = ""
+
+    if thermostat["is_online"]:
+        infotext += "%s degrees" % (thermostat["temperature"])
+        return (0, infotext)
+    else:
+        infotext += "Nest Thermostat Offline"
+        return (3, infotext)
+
+check_info["nest_temp"] = {
+    'check_function':        check_nest_temp,
+    'inventory_function':    inventory_nest_temp,
+    'service_description':   'Temperature %s',
+    'group':                 'nest_thermostat',
+    'has_perfdata':          False,
+}
+

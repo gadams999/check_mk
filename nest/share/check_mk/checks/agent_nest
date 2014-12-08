@@ -17,6 +17,14 @@
 # to the Free Software Foundation, Inc., 51 Franklin St,  Fifth Floor,
 # Boston, MA 02110-1301 USA.
 
+# This check calls the program that generates the inventory data for
+# the <<<nest>>> portion. It passes the only wato configured parameter.
+# access_token, which is used to contact nest and get the entire structure
+# of managed devices
+
+# Each section returned by the special agent is used by the other service checks
+# <<<nest_thermostat>>> or <<<nest_smokealarm>>>
+
 def agent_nest_arguments(params, hostname, ipaddress):
     args = ''
 
