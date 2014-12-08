@@ -22,6 +22,13 @@
 
 # Creates temperature checks for all reported thermostats
 
+# Default values are set at "reasonable" extremes for comfortable temperatures
+# in celcius. If these are overwritten in Wato, we corect based on the
+# temperature scale
+
+nest_temp_defaultlevels = ((0, 15.55), (26.7, 32.2), ("scale", "C"))
+
+
 def nest_temp_parse(info):
     thermostats = {}
     for line in info:
@@ -31,40 +38,59 @@ def nest_temp_parse(info):
             thermostats[name] = thermostat
         else:
             key, value = line
-            if key == "is_online":
-                value = value.lower() == "true"
-            elif key in ["temperature", ]:
+            if key in ["temperature_scale" ]:
+                value = str(value)
+            elif key in ["ambient_temperature_f", "ambient_temperature_c" ]:
                 value = float(value)
-            elif key in ["humidity", ]:
-                value = int(value)
             thermostat[key] = value
     return thermostats
 
 def inventory_nest_temp(info):
-    print info
     thermostats = nest_temp_parse(info)
-    return [ (name, {}) for name in thermostats ]
+    return [ (name, {}, nest_temp_defaultlevels) for name in thermostats ]
 
 def check_nest_temp(item, params, info):
+
+    critlow, warnlow = params[0]
+    warnhigh, crithigh = params[1]
+    duff, tempscale = params[2]
+
+    # set warn and crit as both values, low and high, separated by colon
+    # perfdata and PNP4Nagios should pick this up
+    warn = "%f:%f" % (warnlow, warnhigh)
+    crit = "%f:%f" % (critlow, crithigh)
+    
+    # Process inventory for datasource check
     thermostats = nest_thermostat_parse(info)
-    if item not in thermostats:
-        return 3, "Thermostat does not exist"
     thermostat = thermostats[item]
     
     infotext = ""
 
-    if thermostat["is_online"]:
-        infotext += "%s degrees" % (thermostat["temperature"])
-        return (0, infotext)
+    # Pull value based on what scale selected, then build infotext and perfdata 
+
+    if tempscale == "F":
+        temp = float(thermostat["ambient_temperature_f"])
+        infotext += "%.2f °F" % temp
+        # 50 and 95 are for the RRD graph min/max - need to change to Wato
+        perfdata = [ ("temp", temp, warn, crit, 50, 95) ]
+    if tempscale == "C":
+        temp = float(thermostat["ambient_temperature_c"])
+        infotext += "%.2f °C" % temp
+        # 10 and 35 are for the RRD graph min/max - need to change to Wato
+        perfdata = [ ("temp", temp, warn, crit, 10, 35) ]
+
+    if temp <= critlow or temp >= crithigh:
+        return (2, "CRITICAL - Temperature is %s" % infotext, perfdata)
+    if temp <= warnlow or temp >= warnhigh:
+        return (1, "WARNING - Temperature is %s" % infotext, perfdata)
     else:
-        infotext += "Nest Thermostat Offline"
-        return (3, infotext)
+        return (0, "OK - Temperature is %s" % infotext, perfdata)
 
 check_info["nest_temp"] = {
     'check_function':        check_nest_temp,
     'inventory_function':    inventory_nest_temp,
     'service_description':   'Temperature %s',
     'group':                 'nest_thermostat',
-    'has_perfdata':          False,
+    'has_perfdata':          True,
 }
 
