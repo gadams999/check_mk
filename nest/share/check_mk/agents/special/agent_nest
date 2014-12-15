@@ -1,8 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-import sys, requests
+import sys, requests, json
 
+# Takes valid authorization token and gets the entire data structure from the
+# Nest API.
 
 if len(sys.argv) < 2:
     sys.exit('Usage: %s access_token' % sys.argv[0])
@@ -10,27 +12,83 @@ if len(sys.argv) < 2:
 token = str(sys.argv[1])
 payload = {'auth': token}
 
-#r = requests.get("https://developer-api.nest.com/", params=payload)
+r = requests.get("https://developer-api.nest.com/", params=payload)
 #print r.url
 #print r.text
-#print "Response: " + str(r.status_code)
 
+# Create data object from JSON
+# Then print each section parsed my check_mk checks of the same name
+
+data = json.loads(r.text)
+
+# check_mk - format is key: value (note the :)
 
 print "<<<check_mk>>>"
 print "Version: 1.1"
 print "AgentOs: Nest RESTful API"
 
+# nest - General Nest information - blank now, will populate with API status
+# such as 400 or 500 messages
+
 print "<<<nest>>>"
-print "line1 foobarchu"
+
+# nest_thermostat - Informational only content, no WARN or CRIT values
+
 print "<<<nest_thermostat>>>"
-print "[Upstairs_(Hallway)]"
-print "unique_id tICJpgbaGMAZzaMaCTVoyMnts0rWpQV9"
-print "software_version 4.1"
-print "is_online true"
-print "[Living_Room]"
-print "unique_id tICJpgbaGMB5mIN4hKuqVMnts0rWpQV9"
-print "software_version 4.1"
-print "is_online true"
+for devices in data['devices']['thermostats']:
+    print "[" + data['devices']['thermostats'][devices]['name_long'].replace(" ", "_") + "]"
+    print "software_version " + \
+         data['devices']['thermostats'][devices]['software_version']
+    print "unique_id " + \
+         devices
+
+##### need try: except: here as last_connection may not be a returned value if the device
+##### has never spoken to the Nest web site - unsure how unlikey, but this does happen for
+#### developer accounts
+
+    try:
+        if 'last_connection' in data['devices']['thermostats'][devices]:
+            print "last_connection " + \
+                data['devices']['thermostats'][devices]['last_connetion']
+    except KeyError:
+        print "last_connection NaN"
+
+    if data['devices']['thermostats'][devices]['is_online']:
+        print "is_online true"
+    else:
+        print "is_online false"
+    if data['devices']['thermostats'][devices]['has_leaf']:
+        print "has_leaf true"
+    else:
+        print "has_leaf false"
+
+
+# nest_temp - Most recent ambient temperatue and scale, on the Nest website,
+#             the user prefers to view (F or C)
+
+print "<<<nest_temp>>>"
+for devices in data['devices']['thermostats']:
+    print "[" + data['devices']['thermostats'][devices]['name_long'].replace(" ", "_") + "]"
+    print "temperature_scale " + \
+         data['devices']['thermostats'][devices]['temperature_scale']
+    print "ambient_temperature_f %f" % \
+         data['devices']['thermostats'][devices]['ambient_temperature_f']
+    print "ambient_temperature_c %f" % \
+         data['devices']['thermostats'][devices]['ambient_temperature_c']
+
+# nest_humidity - Most recent relative humidity reading from the thermostat
+
+print "<<<nest_humidity>>>"
+for devices in data['devices']['thermostats']:
+    print "[" + data['devices']['thermostats'][devices]['name_long'].replace(" ", "_") + "]"
+    print "humidity %d" % \
+         data['devices']['thermostats'][devices]['humidity']
+
+
+
+exit (0)
+
+
 print "<<<nest_temp>>>"
 print "[Upstairs_(Hallway)]"
 print "temperature_scale F"

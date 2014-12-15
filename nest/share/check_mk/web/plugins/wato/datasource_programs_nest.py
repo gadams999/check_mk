@@ -16,35 +16,3 @@ register_rule(group,
     ),
     match = 'all'
     )
-
-group = "checkparams"
-subgroup_environment =  _("Temperature, Humidity, Electrical Parameters, etc.")
-
-
-register_check_params(
-    subgroup_environment,
-    "nest_temp",
-    _("Nest Thermostat Temperature"),
-    Tuple(
-        title = _("Temperature of Nest Thermostats"),
-        elements = [
-            Float(
-                title = _("Critical low value -- default is in Celcius"),
-                unit = _("Temperature"),
-                default_value = crtilow,
-            ),
-            Float(
-                title = _("Warning low value -- default is in Celcius"),
-                unit = _("Temperature"),
-                default_value = crtilow,
-            ),
-            Float(
-                title = _("Warning high value -- default is in Celcius"),
-                unit = _("Temperature"),
-                default_value = crtilow,
-            ),
-            Float(
-                title = _("Critical High value -- default is in Celcius"),
-                unit = _("Temperature"),
-                default_value = crtilow,
-            ),

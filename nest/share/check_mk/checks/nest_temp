@@ -26,7 +26,8 @@
 # in celcius. If these are overwritten in Wato, we corect based on the
 # temperature scale
 
-nest_temp_defaultlevels = ((0, 15.55), (26.7, 32.2), ("scale", "C"))
+#nest_temp_defaultlevels = ((0, 15.55), (26.7, 32.2), "C")
+nest_temp_defaultlevels = (0.0, 15.55, 26.7, 32.2, "C")
 
 
 def nest_temp_parse(info):
@@ -47,16 +48,23 @@ def nest_temp_parse(info):
 
 def inventory_nest_temp(info):
     thermostats = nest_temp_parse(info)
-    return [ (name, {}, nest_temp_defaultlevels) for name in thermostats ]
+    return [ (name, {}, "nest_temp_defaultlevels") for name in thermostats ]
 
 def check_nest_temp(item, params, info):
 
-    critlow, warnlow = params[0]
-    warnhigh, crithigh = params[1]
-    duff, tempscale = params[2]
+    critlow, warnlow, warnhigh, crithigh, tempscale = params
 
     # set warn and crit as both values, low and high, separated by colon
     # perfdata and PNP4Nagios should pick this up
+
+    # Based on tempscale, need to convert F to C
+
+    if tempscale == "F":
+        warnlow = (warnlow - 32.0)/1.8
+        warnhigh = (warnhigh - 32.0)/1.8
+        critlow = (critlow - 32.0)/1.8
+        crithigh = (crithigh - 32.0)/1.8
+
     warn = "%f:%f" % (warnlow, warnhigh)
     crit = "%f:%f" % (critlow, crithigh)
     
@@ -66,18 +74,22 @@ def check_nest_temp(item, params, info):
     
     infotext = ""
 
-    # Pull value based on what scale selected, then build infotext and perfdata 
+    # All values are stored internally as Celsius values, then we use the tempscale
+    # for the friendly text (and hopefully for pnp4nagios to display in the correct
+    # scale
 
     if tempscale == "F":
         temp = float(thermostat["ambient_temperature_f"])
         infotext += "%.2f °F" % temp
         # 50 and 95 are for the RRD graph min/max - need to change to Wato
-        perfdata = [ ("temp", temp, warn, crit, 50, 95) ]
+        # convert current temp to Celsius
+        temp = float(thermostat["ambient_temperature_c"])
+        perfdata = [ ("temp", "%fF" % temp, warn, crit, 10, 35) ]
     if tempscale == "C":
         temp = float(thermostat["ambient_temperature_c"])
         infotext += "%.2f °C" % temp
         # 10 and 35 are for the RRD graph min/max - need to change to Wato
-        perfdata = [ ("temp", temp, warn, crit, 10, 35) ]
+        perfdata = [ ("temp", "%fC" % temp, warn, crit, 10, 35) ]
 
     if temp <= critlow or temp >= crithigh:
         return (2, "CRITICAL - Temperature is %s" % infotext, perfdata)
@@ -90,7 +102,7 @@ check_info["nest_temp"] = {
     'check_function':        check_nest_temp,
     'inventory_function':    inventory_nest_temp,
     'service_description':   'Temperature %s',
-    'group':                 'nest_thermostat',
+    'group':                 'nest_temp',
     'has_perfdata':          True,
 }
 
