@@ -48,3 +48,41 @@ register_check_parameters(
         allow_empty = False),
     "first"
 )
+
+register_check_parameters(
+    subgroup_environment,
+    "nest_humidity",
+    _("Nest Thermostat Humidity"),
+    Tuple(
+        title = _("Humidity of Nest Thermostats"),
+        elements = [
+            Integer(
+                title = _("Critical low value"),
+                unit = _("% RH"),
+                default_value = 30,
+            ),
+            Integer(
+                title = _("Warning low value"),
+                unit = _("% RH"),
+                default_value = 40,
+            ),
+            Integer(
+                title = _("Warning high value"),
+                unit = _("% RH"),
+                default_value = 60,
+            ),
+            Integer(
+                title = _("Critical High value"),
+                unit = _("% RH"),
+                default_value = 70,
+            ),
+        ]
+    ),
+    TextAscii(
+        title = _("Thermostat"),
+        allow_empty = False),
+    "first"
+)
+
+
+
