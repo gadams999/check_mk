@@ -31,14 +31,12 @@ def nest_thermostat_parse(info):
             thermostats[name] = thermostat
         else:
             key, value = line
-            if key == "is_online":
+            if key in ["is_online", "has_leaf"]:
                 value = value.lower() == "true"
             elif key in ["unique_id", "software_version", "temperature_scale"]:
                 value = str(value)
-            elif key in ["temperature", ]:
-                value = float(value)
-            elif key in ["humidity", ]:
-                value = int(value)
+            elif key in ["last_connected" ]:
+                value = str(value)
             thermostat[key] = value
     return thermostats
 
@@ -53,10 +51,18 @@ def check_nest_thermostat(item, params, info):
     thermostat = thermostats[item]
     
     infotext = ""
+    perfdata = ""
 
     if thermostat["is_online"]:
-        infotext += "Nest Thermostat Online, Version: %s" % (thermostat["software_version"])
-        return (0, infotext)
+        infotext += "Nest Thermostat Online, Version: %s" % \
+          (thermostat["software_version"] )
+        if thermostat["has_leaf"]:
+            infotext += ", GREEN! (Has leaf)"
+            perfdata = [( "leaf", 1)]
+        else:
+            infotext += ", RED! (no leaf)"
+            perfdata = [( "leaf", 0)]
+        return (0, infotext, perfdata)
     else:
         infotext += "Nest Thermostat Offline, Version: %s" % (thermostat["software_version"])
         return (1, infotext)
@@ -66,6 +72,6 @@ check_info["nest_thermostat"] = {
     'inventory_function':    inventory_nest_thermostat,
     'service_description':   'Thermostat %s',
     'group':                 'nest_thermostat',
-    'has_perfdata':          False,
+    'has_perfdata':          True,
 }
 

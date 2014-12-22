@@ -46,17 +46,18 @@ for devices in data['devices']['thermostats']:
 ##### has never spoken to the Nest web site - unsure how unlikey, but this does happen for
 #### developer accounts
 
-    try:
-        if 'last_connection' in data['devices']['thermostats'][devices]:
-            print "last_connection " + \
-                data['devices']['thermostats'][devices]['last_connetion']
-    except KeyError:
-        print "last_connection NaN"
+#    try:
+#        if 'last_connection' in data['devices']['thermostats'][devices]:
+#            print "last_connection " + \
+#                data['devices']['thermostats'][devices]['last_connection']
+#    except KeyError:
+#        print "last_connection NaN"
 
     if data['devices']['thermostats'][devices]['is_online']:
         print "is_online true"
     else:
         print "is_online false"
+
     if data['devices']['thermostats'][devices]['has_leaf']:
         print "has_leaf true"
     else:
@@ -65,6 +66,8 @@ for devices in data['devices']['thermostats']:
 
 # nest_temp - Most recent ambient temperatue and scale, on the Nest website,
 #             the user prefers to view (F or C)
+#             nest_temp only uses the Celsius value (the wato default). Scale
+#             can be changed by user per thermostat
 
 print "<<<nest_temp>>>"
 for devices in data['devices']['thermostats']:
@@ -87,14 +90,3 @@ for devices in data['devices']['thermostats']:
 
 
 exit (0)
-
-
-print "<<<nest_temp>>>"
-print "[Upstairs_(Hallway)]"
-print "temperature_scale F"
-print "ambient_temperature_f 72"
-print "ambient_temperature_c 21.5"
-print "[Living_Room]"
-print "temperature_scale F"
-print "ambient_temperature_f 72"
-print "ambient_temperature_c 21.5"

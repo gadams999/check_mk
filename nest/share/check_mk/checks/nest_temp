@@ -84,12 +84,12 @@ def check_nest_temp(item, params, info):
         # 50 and 95 are for the RRD graph min/max - need to change to Wato
         # convert current temp to Celsius
         temp = float(thermostat["ambient_temperature_c"])
-        perfdata = [ ("temp", "%fF" % temp, warn, crit, 10, 35) ]
+        perfdata = [ ("temp", temp, warn, crit, 10, 35), ("F", 0) ]
     if tempscale == "C":
         temp = float(thermostat["ambient_temperature_c"])
         infotext += "%.2f °C" % temp
         # 10 and 35 are for the RRD graph min/max - need to change to Wato
-        perfdata = [ ("temp", "%fC" % temp, warn, crit, 10, 35) ]
+        perfdata = [ ("temp", temp, warn, crit, 10, 35), ("C", 0) ]
 
     if temp <= critlow or temp >= crithigh:
         return (2, "CRITICAL - Temperature is %s" % infotext, perfdata)

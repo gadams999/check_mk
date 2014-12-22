@@ -1,0 +1,84 @@
+#!/usr/bin/python
+# -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+#
+# (c) 2014 Adams Technology Consulting
+#          Gavin Adams <me@gavinadams.org>
+#
+
+# This is free software;  you can redistribute it and/or modify it
+# under the  terms of the  GNU General Public License  as published by
+# the Free Software Foundation in version 2.  This file is distributed
+# in the hope that it will be useful, but WITHOUT ANY WARRANTY;  with-
+# out even the implied warranty of  MERCHANTABILITY  or  FITNESS FOR A
+# PARTICULAR PURPOSE. See the  GNU General Public License for more de-
+# ails.  You should have  received  a copy of the  GNU  General Public
+# License along with GNU Make; see the file  COPYING.  If  not,  write
+# to the Free Software Foundation, Inc., 51 Franklin St,  Fifth Floor,
+# Boston, MA 02110-1301 USA.
+
+# Pulls values from the <<<nest_humidity>>> section of the special agent
+# "agent_nest" in the same checks directory
+
+# Creates humidity checks for all reported thermostats
+
+# Default is 50% humidity. Like the temperature, warning and critical
+# values are 10% and 15% beyond the default
+
+nest_humidity_defaultlevels = (35, 40, 60, 65)
+
+
+def nest_humidity_parse(info):
+    thermostats = {}
+    for line in info:
+        if line[0].startswith('['):
+            name = line[0][1:-1]
+            thermostat = {}
+            thermostats[name] = thermostat
+        else:
+            key, value = line
+            if key in ["humidity" ]:
+                value = int(value)
+            thermostat[key] = value
+    return thermostats
+
+def inventory_nest_humidity(info):
+    thermostats = nest_humidity_parse(info)
+    return [ (name, {}, "nest_humidity_defaultlevels") for name in thermostats ]
+
+def check_nest_humidity(item, params, info):
+
+    critlow, warnlow, warnhigh, crithigh = params
+
+    # set warn and crit as both values, low and high, separated by colon
+    # perfdata and PNP4Nagios should pick this up
+
+    warn = "%d:%d" % (warnlow, warnhigh)
+    crit = "%d:%d" % (critlow, crithigh)
+    
+    # Process inventory for datasource check
+    thermostats = nest_thermostat_parse(info)
+    thermostat = thermostats[item]
+    
+    infotext = ""
+    humidity = 0
+
+    humidity = int(thermostat["humidity"])
+    infotext += "%d%% RH" % humidity
+    perfdata = [ ("humidity", humidity, warn, crit) ]
+
+    if humidity <= critlow or humidity >= crithigh:
+        return (2, "CRITICAL - Humidity is %s" % infotext, perfdata)
+    if humidity <= warnlow or humidity >= warnhigh:
+        return (1, "WARNING - Humidity is %s" % infotext, perfdata)
+    else:
+        return (0, "OK - Humidity is %s" % infotext, perfdata)
+
+check_info["nest_humidity"] = {
+    'check_function':        check_nest_humidity,
+    'inventory_function':    inventory_nest_humidity,
+    'service_description':   'Humidity %s',
+    'group':                 'nest_humidity',
+    'has_perfdata':          True,
+}
+
