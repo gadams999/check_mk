@@ -57,14 +57,13 @@ def check_nest_thermostat(item, params, info):
         infotext += "Nest Thermostat Online, Version: %s" % \
           (thermostat["software_version"] )
         if thermostat["has_leaf"]:
-            infotext += ", GREEN! (Has leaf)"
-            perfdata = [( "leaf", 1)]
+            perfdata = [ ( "leaf", 1) ]
         else:
-            infotext += ", RED! (no leaf)"
-            perfdata = [( "leaf", 0)]
+            perfdata = [ ( "leaf", -1) ]
         return (0, infotext, perfdata)
     else:
         infotext += "Nest Thermostat Offline, Version: %s" % (thermostat["software_version"])
+        perfdata = [ ("leaf", 0) ]
         return (1, infotext)
 
 check_info["nest_thermostat"] = {
