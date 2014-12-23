@@ -25,6 +25,9 @@
 # Each section returned by the special agent is used by the other service checks
 # <<<nest_thermostat>>> or <<<nest_smokealarm>>>
 
+# Only parameter required is the access token, which will be in the format of c.xxxxx
+# where xxxx is the unique string
+
 def agent_nest_arguments(params, hostname, ipaddress):
     args = ''
 

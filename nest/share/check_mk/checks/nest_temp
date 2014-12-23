@@ -28,7 +28,6 @@
 
 nest_temp_default_levels = (0.0, 15.55, 26.7, 32.2, "C")
 
-
 def nest_temp_parse(info):
     thermostats = {}
     for line in info:

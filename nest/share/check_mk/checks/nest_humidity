@@ -27,7 +27,6 @@
 
 nest_humidity_default_levels = (35, 40, 60, 65)
 
-
 def nest_humidity_parse(info):
     thermostats = {}
     for line in info:
