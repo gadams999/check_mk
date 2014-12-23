@@ -5,7 +5,7 @@ measurements useful to check_mk / Nagios such and temperature, device status, et
 
 The *Makefile* is used to develop and push changes to an OMD-specific installation.
 
-The *mkp* file is a complete package that can be imported into a check_mk / OMD installation.
+The *mkp*, [nest.mkp][nest.mkp] file is a complete package that can be imported into a check_mk / OMD installation.
 
 All files are under the share/check_mk directory structure and follow the same structure as those
 under OMD (e.g., local/share/...)
