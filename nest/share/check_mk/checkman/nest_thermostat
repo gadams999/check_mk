@@ -1,0 +1,28 @@
+title: Nest Thermostat: Availability and Leaf Status
+agents: nest
+catalog: hw/enviroment
+license: GPL
+distribution: adams_consuting_github
+description:
+ This check monitors the reported availability of the Nest Thermostat
+ to the central Nest service, and if the current conditions are earning
+ a {Nest Leaf}. A leaf indicates energy savings over the baseline power
+ use for the current conditions.
+ The {Access Token} in the Wato {Host & Services Parameters} is required
+ for the agent to query the Nest API.
+
+item:
+ The accessibility and operational status of the Nest Thermostat.
+
+perfdata:
+ If a leaf is being earned (+1) or not (-1)
+
+inventory:
+ One check for each registered thermostat is created by the inventory
+
+[parameters]
+parameters (none): No parameters are required for this check
+
+[configuration]
+nest_thermostat_default (none): No values are requred for this check
+

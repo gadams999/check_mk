@@ -20,4 +20,6 @@ all:
 	sudo cp -p share/check_mk/pnp-templates/* /omd/sites/${SITE}/local/share/check_mk/pnp-templates/
 	sudo chown dev.dev /omd/sites/${SITE}/local/share/check_mk/pnp-templates/*
 
-#	sudo cp pnp4nagios/check_mk-nest.temp.php /omd/sites/${SITE}/local/share/check_mk/pnp-templates/check_mk-nest.temp.php
+	sudo cp -p share/check_mk/checkman/* /omd/sites/${SITE}/local/share/check_mk/checkman/
+	sudo chown dev.dev /omd/sites/${SITE}/local/share/check_mk/checkman/*
+

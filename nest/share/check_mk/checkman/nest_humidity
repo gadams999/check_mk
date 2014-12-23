@@ -1,0 +1,35 @@
+title: Nest Thermostat: Relative humidity sensor
+agents: nest
+catalog: hw/enviroment
+license: GPL
+distribution: adams_consuting_github
+description:
+ This check monitors the reported relative humidity of the Nest Thermostat
+ as reported by the agent. Returned value is rounded to 5% relative humidity
+ from the Nest API, even though the thermostat will sense within 1%..
+ The {Access Token} in the Wato {Host & Services Parameters} is required
+ for the agent to query the Nest API.
+
+item:
+ The relative humidity of the thermostat by name from the Nest website.
+
+perfdata:
+ The relative humidity in percentage from 0 to 100%
+
+inventory:
+ One check for each registered thermostat is created by the inventory
+
+[parameters]
+parameters (tuple): A pair of numbers for both the low and high warning and
+ critical levels.
+
+ warning low (float): The lower relative humidity that triggers an {WARN} state
+ critical low (float): The lower relative humidity that triggers an {CRIT} state
+
+ warning high (float): The higher relative humidity that triggers an {WARN} state
+ critical high (float): The higher relative humidity that triggers an {CRIT} state
+
+
+[configuration]
+nest_humidity_default_levels (tuple): Default warning and critical levels
+

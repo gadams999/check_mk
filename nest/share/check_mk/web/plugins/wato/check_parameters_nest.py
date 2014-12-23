@@ -15,22 +15,22 @@ register_check_parameters(
         title = _("Temperature of Nest Thermostats"),
         elements = [
             Float(
-                title = _("Critical low value"),
+                title = _("Critical at or below"),
                 unit = _("Temperature"),
                 default_value = float(11.0),
             ),
             Float(
-                title = _("Warning low value"),
+                title = _("Warning at or below"),
                 unit = _("Temperature"),
                 default_value = 20.0,
             ),
             Float(
-                title = _("Warning high value"),
+                title = _("Warning at or above"),
                 unit = _("Temperature"),
                 default_value = 25.0,
             ),
             Float(
-                title = _("Critical High value"),
+                title = _("Critical at or above"),
                 unit = _("Temperature"),
                 default_value = 35.0,
             ),
@@ -57,22 +57,22 @@ register_check_parameters(
         title = _("Humidity of Nest Thermostats"),
         elements = [
             Integer(
-                title = _("Critical low value"),
+                title = _("Critical at or below"),
                 unit = _("% RH"),
                 default_value = 30,
             ),
             Integer(
-                title = _("Warning low value"),
+                title = _("Warning at or below"),
                 unit = _("% RH"),
                 default_value = 40,
             ),
             Integer(
-                title = _("Warning high value"),
+                title = _("Warning at or above"),
                 unit = _("% RH"),
                 default_value = 60,
             ),
             Integer(
-                title = _("Critical High value"),
+                title = _("Critical at or above"),
                 unit = _("% RH"),
                 default_value = 70,
             ),

@@ -25,7 +25,7 @@
 # Default is 50% humidity. Like the temperature, warning and critical
 # values are 10% and 15% beyond the default
 
-nest_humidity_defaultlevels = (35, 40, 60, 65)
+nest_humidity_default_levels = (35, 40, 60, 65)
 
 
 def nest_humidity_parse(info):
@@ -44,7 +44,7 @@ def nest_humidity_parse(info):
 
 def inventory_nest_humidity(info):
     thermostats = nest_humidity_parse(info)
-    return [ (name, {}, "nest_humidity_defaultlevels") for name in thermostats ]
+    return [ (name, {}, "nest_humidity_default_levels") for name in thermostats ]
 
 def check_nest_humidity(item, params, info):
 

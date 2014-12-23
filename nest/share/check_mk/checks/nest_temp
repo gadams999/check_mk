@@ -26,8 +26,7 @@
 # in celcius. If these are overwritten in Wato, we corect based on the
 # temperature scale
 
-#nest_temp_defaultlevels = ((0, 15.55), (26.7, 32.2), "C")
-nest_temp_defaultlevels = (0.0, 15.55, 26.7, 32.2, "C")
+nest_temp_default_levels = (0.0, 15.55, 26.7, 32.2, "C")
 
 
 def nest_temp_parse(info):
@@ -48,7 +47,7 @@ def nest_temp_parse(info):
 
 def inventory_nest_temp(info):
     thermostats = nest_temp_parse(info)
-    return [ (name, {}, "nest_temp_defaultlevels") for name in thermostats ]
+    return [ (name, {}, "nest_temp_default_levels") for name in thermostats ]
 
 def check_nest_temp(item, params, info):
 

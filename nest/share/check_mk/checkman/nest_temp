@@ -1,0 +1,35 @@
+title: Nest Thermostat: Ambient temperature sensor
+agents: nest
+catalog: hw/enviroment
+license: GPL
+distribution: adams_consuting_github
+description:
+ This check monitors the reported ambient temperature of the Nest Thermostat
+ as reported by the agent. Returned value is in 0.5 degrees Celsius.
+ The {Access Token} in the Wato {Host & Services Parameters} is required
+ for the agent to query the Nest API.
+
+item:
+ The ambient temperature of the thermostat by name from the Nest website..
+
+perfdata:
+ The actual temperature in degrees celcius
+
+inventory:
+ One check for each registered thermostat is created by the inventory
+
+[parameters]
+parameters (tuple): A pair of numbers for both the low and high warning and
+ critical levels, and a C or F to determine temperature scale for reporting
+ and warning and critical values.
+
+ warning low (float): The lower temperature that triggers an {WARN} state
+ critical low (float): The lower temperature that triggers an {CRIT} state
+
+ warning high (float): The higher temperature that triggers an {WARN} state
+ critical high (float): The higher temperature that triggers an {CRIT} state
+
+
+[configuration]
+nest_temp_default_levels (tuple): Default warning and critical levels, temperature scale
+
