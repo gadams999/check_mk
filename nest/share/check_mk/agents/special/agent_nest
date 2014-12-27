@@ -21,7 +21,25 @@
 # into the distro since I leverage the requests and json pytons
 # libraries to more easily parse the response from Nest
 
-import sys, requests, json
+import imp, sys
+
+try:
+    imp.find_module('requests')
+    found = True
+except:
+    print "<<<check_mk>>>"
+    print "Error: Python module: requests not installed"
+    exit (0)
+
+try:
+    imp.find_module('json')
+    found = True
+except:
+    print "<<<check_mk>>>"
+    print "Error: Python module: json not installed"
+    exit (0)
+
+import requests, json
 
 # Takes valid authorization token and gets the entire data structure from the
 # Nest API.
@@ -33,8 +51,16 @@ token = str(sys.argv[1])
 payload = {'auth': token}
 
 r = requests.get("https://developer-api.nest.com/", params=payload)
-#print r.url
-#print r.text
+
+if r.status_code == 401:
+    print "<<<check_mk>>>"
+    print "Error: Unauthorized, verify Access Token"
+    exit (0)
+
+if r.status_code != 200:
+    print "<<<check_mk>>>"
+    print r.riase_for_status()
+    exit (0)
 
 # Create data object from JSON
 # Then print each section parsed my check_mk checks of the same name
@@ -106,7 +132,5 @@ for devices in data['devices']['thermostats']:
     print "[" + data['devices']['thermostats'][devices]['name_long'].replace(" ", "_") + "]"
     print "humidity %d" % \
          data['devices']['thermostats'][devices]['humidity']
-
-
 
 exit (0)
